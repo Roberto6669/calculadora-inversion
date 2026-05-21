@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#0d1014">
 <title>ROBERTO ESCOBAR CITTY · Calculadora de Inversión</title>
 <style>
   :root {
-    --bg: #000000;
-    --panel: #0c0c0c;
-    --panel-2: #131313;
-    --line: #242424;
-    --line-soft: #1c1c1c;
+    --bg: #0d1014;
+    --panel: #161a1f;
+    --panel-2: #1d2229;
+    --line: #2a3038;
+    --line-soft: #20252c;
     --text: #f2f2f2;
     --muted: #8a8a8a;
-    --red: #b8ff3a;
-    --red-bright: #5ee9ff;
+    --red: #720e9e;
+    --red-bright: #00c805;
     --white-soft: #d8d8d8;
   }
 
@@ -190,7 +190,7 @@
     align-items: center;
     border: 1px solid var(--line);
     border-radius: 7px;
-    background: #000;
+    background: #0d1014;
     overflow: hidden;
     transition: border-color 0.15s;
   }
@@ -236,7 +236,7 @@
     width: 16px; height: 16px;
     border-radius: 50%;
     background: var(--red);
-    border: 3px solid #000;
+    border: 3px solid #0d1014;
     box-shadow: 0 0 0 1px var(--red);
     cursor: pointer;
   }
@@ -244,7 +244,7 @@
     width: 16px; height: 16px;
     border-radius: 50%;
     background: var(--red);
-    border: 3px solid #000;
+    border: 3px solid #0d1014;
     cursor: pointer;
   }
   .range-val {
@@ -336,7 +336,7 @@
     text-transform: uppercase;
     color: var(--muted);
     font-weight: 700;
-    background: #000;
+    background: #0d1014;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
     white-space: nowrap;
@@ -401,7 +401,7 @@
       <div class="crest">R</div>
       <div class="brand-name">ROBERTO ESCOBAR CITTY</div>
     </div>
-    <div class="version">Versión 1.7</div>
+    <div class="version">Versión 1.8</div>
   </div>
 
   <header>
@@ -572,7 +572,7 @@
     un profesional antes de tomar decisiones de inversión.
   </p>
 
-  <div class="footer">Built by <strong>ROBERTO ESCOBAR CITTY</strong> &middot; Versión 1.7</div>
+  <div class="footer">Built by <strong>ROBERTO ESCOBAR CITTY</strong> &middot; Versión 1.8</div>
 
 </div>
 
@@ -695,8 +695,8 @@
     $('chart').innerHTML = `
       <defs>
         <linearGradient id="gTotal" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#b8ff3a" stop-opacity="0.42"/>
-          <stop offset="100%" stop-color="#b8ff3a" stop-opacity="0.02"/>
+          <stop offset="0%" stop-color="#720e9e" stop-opacity="0.42"/>
+          <stop offset="100%" stop-color="#720e9e" stop-opacity="0.02"/>
         </linearGradient>
         <linearGradient id="gAporte" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#d8d8d8" stop-opacity="0.22"/>
@@ -707,10 +707,10 @@
       <path d="${areaPath('aportado')}" fill="url(#gAporte)"/>
       <path d="${linePath('aportado')}" fill="none" stroke="#d8d8d8" stroke-width="1.8"
         stroke-dasharray="4 3" stroke-linejoin="round"/>
-      <path d="${linePath('balance')}" fill="none" stroke="#b8ff3a" stroke-width="2.6"
+      <path d="${linePath('balance')}" fill="none" stroke="#720e9e" stroke-width="2.6"
         stroke-linejoin="round" stroke-linecap="round"/>
-      <circle cx="${x(n)}" cy="${y(serie[n].balance)}" r="4.5" fill="#b8ff3a"
-        stroke="#000" stroke-width="2"/>
+      <circle cx="${x(n)}" cy="${y(serie[n].balance)}" r="4.5" fill="#720e9e"
+        stroke="#0d1014" stroke-width="2"/>
       ${ticks}
     `;
   }
