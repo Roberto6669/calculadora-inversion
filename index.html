@@ -3,19 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0d1014">
+<meta name="theme-color" content="#000000">
 <title>ROBERTO ESCOBAR CITTY · Calculadora de Inversión</title>
 <style>
   :root {
-    --bg: #0d1014;
-    --panel: #161a1f;
-    --panel-2: #1d2229;
-    --line: #2a3038;
-    --line-soft: #20252c;
+    --bg: #000000;
+    --panel: #0c0c0c;
+    --panel-2: #131313;
+    --line: #242424;
+    --line-soft: #1c1c1c;
     --text: #f2f2f2;
     --muted: #8a8a8a;
-    --red: #720e9e;
-    --red-bright: #00c805;
+    --red: #ff7a1a;
+    --red-bright: #ffb547;
+    --book-red: #e3261d;
+    --book-red-hover: #c41f17;
     --white-soft: #d8d8d8;
   }
 
@@ -58,6 +60,27 @@
     font-weight: 700;
     color: #fff;
     font-size: 0.95rem;
+  }
+  .brand-right { display: flex; align-items: center; gap: 10px; }
+  .book-btn {
+    font-family: Helvetica, Verdana, Arial, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--book-red);
+    border: 1px solid var(--book-red);
+    padding: 7px 13px;
+    border-radius: 5px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .book-btn:hover { background: var(--book-red-hover); }
+  @media (max-width: 520px) {
+    .book-btn { font-size: 0.64rem; padding: 6px 9px; letter-spacing: 0.05em; }
   }
   .version {
     font-size: 0.66rem;
@@ -190,7 +213,7 @@
     align-items: center;
     border: 1px solid var(--line);
     border-radius: 7px;
-    background: #0d1014;
+    background: #000;
     overflow: hidden;
     transition: border-color 0.15s;
   }
@@ -236,7 +259,7 @@
     width: 16px; height: 16px;
     border-radius: 50%;
     background: var(--red);
-    border: 3px solid #0d1014;
+    border: 3px solid #000;
     box-shadow: 0 0 0 1px var(--red);
     cursor: pointer;
   }
@@ -244,7 +267,7 @@
     width: 16px; height: 16px;
     border-radius: 50%;
     background: var(--red);
-    border: 3px solid #0d1014;
+    border: 3px solid #000;
     cursor: pointer;
   }
   .range-val {
@@ -325,18 +348,18 @@
 
   /* ---- Table ---- */
   .table-panel { padding: 0; overflow: hidden; }
-  .table-head { padding: 22px 22px 15px; }
+  .table-head { padding: clamp(14px, 2.6vw, 22px) clamp(14px, 2.6vw, 22px) clamp(10px, 1.8vw, 15px); }
   .table-scroll { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  table { width: 100%; border-collapse: collapse; font-size: clamp(0.66rem, 1.6vw, 0.87rem); }
   thead th {
     text-align: right;
-    padding: 12px 16px;
-    font-size: 0.69rem;
-    letter-spacing: 0.05em;
+    padding: clamp(7px, 1.4vw, 12px) clamp(6px, 1.4vw, 16px);
+    font-size: clamp(0.56rem, 1.3vw, 0.69rem);
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--muted);
     font-weight: 700;
-    background: #0d1014;
+    background: #000;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
     white-space: nowrap;
@@ -344,7 +367,7 @@
   thead th:first-child { text-align: left; }
   tbody td {
     text-align: right;
-    padding: 13px 16px;
+    padding: clamp(8px, 1.6vw, 13px) clamp(6px, 1.4vw, 16px);
     border-bottom: 1px solid var(--line-soft);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
@@ -363,7 +386,7 @@
   .sum {
     display: inline-flex;
     align-items: baseline;
-    gap: 5px;
+    gap: clamp(3px, 0.8vw, 5px);
     justify-content: flex-end;
     flex-wrap: nowrap;
     font-variant-numeric: tabular-nums;
@@ -401,7 +424,10 @@
       <div class="crest">R</div>
       <div class="brand-name">ROBERTO ESCOBAR CITTY</div>
     </div>
-    <div class="version">Versión 1.8</div>
+    <div class="brand-right">
+      <a class="book-btn" href="https://therealhowmoneyworks.com/us/roberto_escobar" target="_blank" rel="noopener">Solicite un Libro</a>
+      <div class="version">Versión 1.9</div>
+    </div>
   </div>
 
   <header>
@@ -572,7 +598,7 @@
     un profesional antes de tomar decisiones de inversión.
   </p>
 
-  <div class="footer">Built by <strong>ROBERTO ESCOBAR CITTY</strong> &middot; Versión 1.8</div>
+  <div class="footer">Built by <strong>ROBERTO ESCOBAR CITTY</strong> &middot; Versión 1.9</div>
 
 </div>
 
@@ -695,8 +721,8 @@
     $('chart').innerHTML = `
       <defs>
         <linearGradient id="gTotal" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#720e9e" stop-opacity="0.42"/>
-          <stop offset="100%" stop-color="#720e9e" stop-opacity="0.02"/>
+          <stop offset="0%" stop-color="#ff7a1a" stop-opacity="0.42"/>
+          <stop offset="100%" stop-color="#ff7a1a" stop-opacity="0.02"/>
         </linearGradient>
         <linearGradient id="gAporte" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#d8d8d8" stop-opacity="0.22"/>
@@ -707,10 +733,10 @@
       <path d="${areaPath('aportado')}" fill="url(#gAporte)"/>
       <path d="${linePath('aportado')}" fill="none" stroke="#d8d8d8" stroke-width="1.8"
         stroke-dasharray="4 3" stroke-linejoin="round"/>
-      <path d="${linePath('balance')}" fill="none" stroke="#720e9e" stroke-width="2.6"
+      <path d="${linePath('balance')}" fill="none" stroke="#ff7a1a" stroke-width="2.6"
         stroke-linejoin="round" stroke-linecap="round"/>
-      <circle cx="${x(n)}" cy="${y(serie[n].balance)}" r="4.5" fill="#720e9e"
-        stroke="#0d1014" stroke-width="2"/>
+      <circle cx="${x(n)}" cy="${y(serie[n].balance)}" r="4.5" fill="#ff7a1a"
+        stroke="#000" stroke-width="2"/>
       ${ticks}
     `;
   }
