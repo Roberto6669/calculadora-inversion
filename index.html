@@ -53,14 +53,10 @@
   }
   .brand-mark { display: flex; align-items: center; gap: 9px; }
   .crest {
-    width: 28px; height: 28px;
-    background: var(--red);
-    border-radius: 5px;
+    width: 36px; height: 36px;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 700;
-    color: #fff;
-    font-size: 0.95rem;
   }
+  .crest img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .brand-right { display: flex; align-items: center; gap: 10px; }
   .book-btn {
     font-family: Helvetica, Verdana, Arial, sans-serif;
@@ -409,10 +405,16 @@
 
   .footer {
     text-align: center;
-    margin-top: 28px;
+    margin-top: 32px;
     font-size: 0.76rem;
     color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
   }
+  .footer-logo { width: 70px; height: 70px; }
+  .footer-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .footer strong { color: var(--red); }
 </style>
 </head>
@@ -421,12 +423,12 @@
 
   <div class="brand">
     <div class="brand-mark">
-      <div class="crest">R</div>
+      <div class="crest"><img src="logoR.png" alt="Roberto Escobar Citty"></div>
       <div class="brand-name">ROBERTO ESCOBAR CITTY</div>
     </div>
     <div class="brand-right">
       <a class="book-btn" href="https://therealhowmoneyworks.com/us/roberto_escobar" target="_blank" rel="noopener">Solicite un Libro</a>
-      <div class="version">Versión 1.9</div>
+      <div class="version">Versión 2.0</div>
     </div>
   </div>
 
@@ -598,7 +600,10 @@
     un profesional antes de tomar decisiones de inversión.
   </p>
 
-  <div class="footer">Built by <strong>ROBERTO ESCOBAR CITTY</strong> &middot; Versión 1.9</div>
+  <div class="footer">
+    <div class="footer-logo"><img src="logoR.png" alt="Roberto Escobar Citty"></div>
+    <div>Built by <strong>ROBERTO ESCOBAR CITTY</strong> &middot; Versión 2.0</div>
+  </div>
 
 </div>
 
