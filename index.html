@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>ROBERTO ESCOBAR CITTY · Calculadora de Inversión</title>
+<style>
+  :root {
+    --bg: #000000;
+    --panel: #0c0c0c;
+    --panel-2: #131313;
+    --line: #242424;
+    --line-soft: #1c1c1c;
+    --text: #f2f2f2;
+    --muted: #8a8a8a;
+    --red: #e3261d;
+    --red-bright: #ff463d;
+    --white-soft: #d8d8d8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: Helvetica, Verdana, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 26px 14px 60px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1000px; margin: 0 auto; }
+
+  /* ---- Brand bar ---- */
+  .brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    margin-bottom: 26px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand-name {
+    font-size: 1.02rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .brand-mark { display: flex; align-items: center; gap: 9px; }
+  .crest {
+    width: 28px; height: 28px;
+    background: var(--red);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    font-size: 0.95rem;
+  }
+  .version {
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--red);
+    border: 1px solid var(--red);
+    padding: 5px 11px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* ---- Header ---- */
+  header { margin-bottom: 24px; }
+  .eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 11px;
+    font-weight: 700;
+  }
+  h1 {
+    font-weight: 700;
+    font-size: clamp(1.7rem, 4.8vw, 2.7rem);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+  h1 em { font-style: normal; color: var(--red); }
+  .sub {
+    color: var(--muted);
+    font-size: 0.95rem;
+    max-width: 540px;
+    margin-top: 11px;
+  }
+
+  /* ---- Fund shortcuts ---- */
+  .funds { margin-bottom: 16px; }
+  .funds-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .fund-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(6px, 1.4vw, 10px);
+  }
+  .fund-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: clamp(9px, 1.8vw, 14px) clamp(9px, 1.8vw, 15px);
+    min-width: 0;
+  }
+  .fund-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 3px;
+  }
+  .fund-ticker { font-size: clamp(0.82rem, 2vw, 1.02rem); font-weight: 700; letter-spacing: 0.02em; }
+  .fund-rate { font-size: clamp(0.82rem, 2vw, 1.02rem); font-weight: 700; color: var(--red); }
+  .fund-name { font-size: clamp(0.6rem, 1.4vw, 0.73rem); color: var(--muted); margin-bottom: 11px; }
+  .fund-btns { display: flex; gap: clamp(4px, 1vw, 7px); }
+  .fund-btn {
+    flex: 1;
+    min-width: 0;
+    font-family: Helvetica, Verdana, Arial, sans-serif;
+    font-size: clamp(0.6rem, 1.4vw, 0.74rem);
+    font-weight: 700;
+    padding: clamp(7px, 1.4vw, 9px) clamp(3px, 0.8vw, 6px);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: opacity 0.15s, background 0.15s;
+    line-height: 1.2;
+  }
+  .fund-btn.use { background: var(--red); color: #fff; border: 1px solid var(--red); }
+  .fund-btn.use:hover { opacity: 0.85; }
+  .fund-btn.yahoo { background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .fund-btn.yahoo:hover { background: var(--panel-2); }
+
+  /* ---- Layout: FIJO lado a lado ---- */
+  .grid {
+    display: grid;
+    grid-template-columns: 0.92fr 1.08fr;
+    gap: 14px;
+    margin-bottom: 16px;
+    align-items: start;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: clamp(13px, 2.4vw, 24px);
+  }
+
+  .panel-title {
+    font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .panel-note {
+    font-size: clamp(0.7rem, 1.5vw, 0.84rem);
+    color: var(--muted);
+    margin-bottom: clamp(13px, 2.4vw, 22px);
+  }
+
+  /* ---- Inputs ---- */
+  .field { margin-bottom: clamp(13px, 2.4vw, 20px); }
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: clamp(0.74rem, 1.7vw, 0.86rem);
+    font-weight: 700;
+    margin-bottom: 7px;
+    color: var(--text);
+  }
+  .hint { font-weight: 400; color: var(--muted); font-size: 0.92em; }
+
+  .input-shell {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: #000;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .input-shell:focus-within { border-color: var(--red); }
+  .affix {
+    padding: 0 clamp(8px, 1.6vw, 13px);
+    color: var(--red);
+    font-weight: 700;
+    font-size: clamp(0.8rem, 1.7vw, 0.92rem);
+    background: var(--panel-2);
+    align-self: stretch;
+    display: flex; align-items: center;
+  }
+  .affix.right { border-left: 1px solid var(--line); }
+  .affix.left { border-right: 1px solid var(--line); }
+
+  input[type="number"] {
+    border: none; outline: none;
+    padding: clamp(9px, 1.8vw, 12px);
+    font-family: Helvetica, Verdana, Arial, sans-serif;
+    font-size: clamp(0.9rem, 2vw, 1.05rem);
+    font-weight: 700;
+    color: var(--text);
+    width: 100%;
+    background: transparent;
+    -moz-appearance: textfield;
+    min-width: 0;
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  .slider-row { margin-top: 11px; }
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--line);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--red);
+    border: 3px solid #000;
+    box-shadow: 0 0 0 1px var(--red);
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--red);
+    border: 3px solid #000;
+    cursor: pointer;
+  }
+  .range-val {
+    display: flex; justify-content: space-between;
+    font-size: clamp(0.66rem, 1.4vw, 0.76rem); color: var(--muted);
+    margin-top: 5px;
+  }
+
+  /* ---- Results ---- */
+  .results { display: flex; flex-direction: column; gap: 11px; }
+
+  .hero-result {
+    background: var(--panel);
+    border: 1px solid var(--red);
+    border-radius: 9px;
+    padding: clamp(14px, 2.6vw, 21px) clamp(15px, 2.8vw, 23px);
+  }
+  .res-label {
+    font-size: clamp(0.62rem, 1.4vw, 0.74rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .hero-num {
+    font-weight: 700;
+    font-size: clamp(1.7rem, 5.4vw, 2.9rem);
+    line-height: 1.05;
+    margin-top: 5px;
+    color: var(--red-bright);
+    letter-spacing: -0.02em;
+  }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+  .mini {
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: clamp(11px, 2vw, 15px) clamp(12px, 2.2vw, 16px);
+    background: var(--panel);
+  }
+  .mini-num {
+    font-weight: 700;
+    font-size: clamp(1.05rem, 2.8vw, 1.45rem);
+    margin-top: 3px;
+    letter-spacing: -0.02em;
+  }
+  .mini.aporte .mini-num { color: var(--text); }
+  .mini.interes .mini-num { color: var(--red); }
+
+  .multiplier {
+    text-align: center;
+    font-size: clamp(0.72rem, 1.6vw, 0.85rem);
+    color: var(--muted);
+    padding: 2px 4px;
+  }
+  .multiplier strong { color: var(--red); font-weight: 700; }
+
+  /* ---- Mini chart ---- */
+  .chart-mini {
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--panel);
+    padding: clamp(11px, 2vw, 15px) clamp(12px, 2.4vw, 17px) 9px;
+  }
+  .chart-mini-head {
+    display: flex; justify-content: space-between;
+    align-items: baseline; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 8px;
+  }
+  .chart-mini-title { font-size: clamp(0.84rem, 1.9vw, 0.98rem); font-weight: 700; }
+  .legend { display: flex; gap: 11px; font-size: clamp(0.64rem, 1.4vw, 0.73rem); color: var(--muted); }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+  .dot.aporte { background: var(--white-soft); }
+  .dot.total { background: var(--red); }
+
+  svg { width: 100%; height: auto; display: block; }
+
+  /* ---- Table ---- */
+  .table-panel { padding: 0; overflow: hidden; }
+  .table-head { padding: 22px 22px 15px; }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  thead th {
+    text-align: right;
+    padding: 12px 16px;
+    font-size: 0.69rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    background: #000;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  thead th:first-child { text-align: left; }
+  tbody td {
+    text-align: right;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  tbody td:first-child {
+    text-align: left;
+    font-weight: 700;
+    color: var(--red);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(227,38,29,0.06); }
+  .td-aporte { color: var(--text); }
+  .td-interes { color: var(--red); font-weight: 700; }
+
+  /* suma visual */
+  .sum {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .sum .prev { color: var(--white-soft); font-weight: 700; }
+  .sum .op { color: var(--muted); font-weight: 400; font-size: 0.85em; }
+  .sum .add { color: var(--red); font-weight: 700; }
+  .sum .eq { color: var(--muted); font-weight: 400; font-size: 0.85em; }
+  .sum .res { color: #fff; font-weight: 700; font-size: 1.08em; }
+
+  /* ---- Disclaimer ---- */
+  .disclaimer {
+    margin-top: 22px;
+    font-size: 0.77rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 700px;
+  }
+  .disclaimer strong { color: var(--text); font-weight: 700; }
+
+  .footer {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 0.76rem;
+    color: var(--muted);
+  }
+  .footer strong { color: var(--red); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="brand-mark">
+      <div class="crest">R</div>
+      <div class="brand-name">ROBERTO ESCOBAR CITTY</div>
+    </div>
+    <div class="version">Versión 1.5</div>
+  </div>
+
+  <header>
+    <div class="eyebrow">Educación Financiera</div>
+    <h1>Mira crecer <em>tu dinero</em></h1>
+    <p class="sub">Descubre cuánto puedes acumular con el poder del interés compuesto. Ajusta los números y observa el resultado al instante.</p>
+  </header>
+
+  <!-- FONDOS -->
+  <div class="funds">
+    <div class="funds-label">Fondos de alto rendimiento — toca para usar la tasa de ejemplo</div>
+    <div class="fund-row">
+
+      <div class="fund-card">
+        <div class="fund-top">
+          <span class="fund-ticker">FELAX</span>
+          <span class="fund-rate">35.29%</span>
+        </div>
+        <div class="fund-name">Fidelity Adv Semiconductors A</div>
+        <div class="fund-btns">
+          <button class="fund-btn use" onclick="usarFondo(35.29)">Usar esta tasa</button>
+          <a class="fund-btn yahoo" href="https://finance.yahoo.com/quote/FELAX/performance/" target="_blank" rel="noopener">Ver en Yahoo</a>
+        </div>
+      </div>
+
+      <div class="fund-card">
+        <div class="fund-top">
+          <span class="fund-ticker">FKDNX</span>
+          <span class="fund-rate">17.87%</span>
+        </div>
+        <div class="fund-name">Franklin DynaTech A</div>
+        <div class="fund-btns">
+          <button class="fund-btn use" onclick="usarFondo(17.87)">Usar esta tasa</button>
+          <a class="fund-btn yahoo" href="https://finance.yahoo.com/quote/FKDNX/performance/" target="_blank" rel="noopener">Ver en Yahoo</a>
+        </div>
+      </div>
+
+      <div class="fund-card">
+        <div class="fund-top">
+          <span class="fund-ticker">VADAX</span>
+          <span class="fund-rate">11.38%</span>
+        </div>
+        <div class="fund-name">Invesco Diversified Dividend A</div>
+        <div class="fund-btns">
+          <button class="fund-btn use" onclick="usarFondo(11.38)">Usar esta tasa</button>
+          <a class="fund-btn yahoo" href="https://finance.yahoo.com/quote/VADAX/performance/" target="_blank" rel="noopener">Ver en Yahoo</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">Tus datos</div>
+      <div class="panel-note">Llena los campos según tu plan de ahorro.</div>
+
+      <div class="field">
+        <label>Con cuánto abres la cuenta</label>
+        <div class="input-shell">
+          <span class="affix left">$</span>
+          <input type="number" id="inicial" value="100" min="0" step="25">
+        </div>
+        <div class="slider-row">
+          <input type="range" id="inicialSlider" value="100" min="25" max="1000" step="25">
+          <div class="range-val"><span>$25</span><span>$1,000</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Cuánto aportas cada mes</label>
+        <div class="input-shell">
+          <span class="affix left">$</span>
+          <input type="number" id="mensual" value="200" min="0" step="25">
+        </div>
+        <div class="slider-row">
+          <input type="range" id="mensualSlider" value="200" min="25" max="2000" step="25">
+          <div class="range-val"><span>$25</span><span>$2,000</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Rendimiento anual estimado
+          <span class="hint">— el % que crece cada año</span>
+        </label>
+        <div class="input-shell">
+          <input type="number" id="tasa" value="10" min="0" max="40" step="0.01">
+          <span class="affix right">%</span>
+        </div>
+        <div class="slider-row">
+          <input type="range" id="tasaSlider" value="10" min="0" max="40" step="0.5">
+          <div class="range-val"><span>0%</span><span>40%</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Por cuántos años vas a invertir</label>
+        <div class="input-shell">
+          <input type="number" id="anios" value="20" min="1" max="50" step="1">
+          <span class="affix right">años</span>
+        </div>
+        <div class="slider-row">
+          <input type="range" id="aniosSlider" value="20" min="1" max="40" step="1">
+          <div class="range-val"><span>1 año</span><span>40 años</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="results">
+      <div class="hero-result">
+        <div class="res-label">Valor final de tu inversión</div>
+        <div class="hero-num" id="rValor">$0</div>
+      </div>
+      <div class="split">
+        <div class="mini aporte">
+          <div class="res-label">Lo que tú pusiste</div>
+          <div class="mini-num" id="rAporte">$0</div>
+        </div>
+        <div class="mini interes">
+          <div class="res-label">Ganado en intereses</div>
+          <div class="mini-num" id="rInteres">$0</div>
+        </div>
+      </div>
+      <div class="multiplier" id="rMult"></div>
+
+      <div class="chart-mini">
+        <div class="chart-mini-head">
+          <div class="chart-mini-title">Cómo crece tu dinero</div>
+          <div class="legend">
+            <span><i class="dot aporte"></i> Tus aportes</span>
+            <span><i class="dot total"></i> Valor total</span>
+          </div>
+        </div>
+        <svg id="chart" viewBox="0 0 520 170" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel table-panel">
+    <div class="table-head">
+      <div class="panel-title">Detalle de cada año</div>
+      <div class="panel-note" style="margin:0">
+        Mira cómo el total del año anterior <strong style="color:var(--text)">más</strong> el interés ganado
+        se convierten en tu nuevo total acumulado.
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Año</th>
+            <th>Aporte del año</th>
+            <th>Interés del año</th>
+            <th>Total aportado</th>
+            <th>Total acumulado &nbsp;=&nbsp; anterior + interés</th>
+          </tr>
+        </thead>
+        <tbody id="tabla"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="disclaimer">
+    <strong>Nota importante:</strong> esta calculadora es solo una herramienta educativa para ilustrar
+    cómo funciona el interés compuesto. Las tasas mostradas son ejemplos y los resultados son estimaciones
+    basadas en la tasa que se ingresa; no garantizan rendimientos. Las inversiones reales suben y bajan
+    cada año y el rendimiento pasado no predice el futuro. No constituye asesoría financiera. Consulta a
+    un profesional antes de tomar decisiones de inversión.
+  </p>
+
+  <div class="footer">Built by <strong>ROBERTO ESCOBAR CITTY</strong> &middot; Versión 1.5</div>
+
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+
+  function link(input, slider) {
+    input.addEventListener('input', () => {
+      const v = parseFloat(input.value);
+      if (!isNaN(v)) slider.value = Math.min(slider.max, Math.max(slider.min, v));
+      calcular();
+    });
+    slider.addEventListener('input', () => {
+      input.value = slider.value;
+      calcular();
+    });
+  }
+  link($('inicial'), $('inicialSlider'));
+  link($('mensual'), $('mensualSlider'));
+  link($('tasa'), $('tasaSlider'));
+  link($('anios'), $('aniosSlider'));
+
+  function usarFondo(tasa) {
+    $('tasa').value = tasa;
+    $('tasaSlider').value = Math.min($('tasaSlider').max, Math.max($('tasaSlider').min, tasa));
+    calcular();
+    document.querySelector('.grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function calcular() {
+    const inicial = Math.max(0, parseFloat($('inicial').value) || 0);
+    const mensual = Math.max(0, parseFloat($('mensual').value) || 0);
+    const tasa    = Math.max(0, parseFloat($('tasa').value) || 0) / 100;
+    const anios   = Math.max(1, Math.min(50, parseInt($('anios').value) || 1));
+
+    const rMensual = tasa / 12;
+    let balance = inicial;
+    let aportado = inicial;
+    const filas = [];
+    const serie = [{ balance: inicial, aportado: inicial }];
+
+    for (let a = 1; a <= anios; a++) {
+      const balanceIni = balance;
+      let interesAnio = 0;
+      for (let m = 0; m < 12; m++) {
+        const interesMes = balance * rMensual;
+        interesAnio += interesMes;
+        balance += interesMes + mensual;
+      }
+      const aporteAnio = mensual * 12;
+      aportado += aporteAnio;
+      filas.push({ anio: a, aporteAnio, interesAnio, aportado, balanceIni, balance });
+      serie.push({ balance, aportado });
+    }
+
+    const interesTotal = balance - aportado;
+    $('rValor').textContent   = fmt(balance);
+    $('rAporte').textContent  = fmt(aportado);
+    $('rInteres').textContent = fmt(interesTotal);
+
+    const mult = aportado > 0 ? (balance / aportado) : 0;
+    $('rMult').innerHTML = 'Tu dinero se multiplicó por <strong>' + mult.toFixed(1) + '×</strong> — '
+      + 'de cada dólar que pusiste, el interés generó <strong>$'
+      + (mult - 1).toFixed(2) + '</strong> extra.';
+
+    pintarTabla(filas);
+    pintarGrafico(serie);
+  }
+
+  function pintarTabla(filas) {
+    $('tabla').innerHTML = filas.map(f => {
+      const base = f.balanceIni + f.aporteAnio;
+      return `
+      <tr>
+        <td>Año ${f.anio}</td>
+        <td class="td-aporte">${fmt(f.aporteAnio)}</td>
+        <td class="td-interes">${fmt(f.interesAnio)}</td>
+        <td class="td-aporte">${fmt(f.aportado)}</td>
+        <td>
+          <span class="sum">
+            <span class="prev">${fmt(base)}</span>
+            <span class="op">+</span>
+            <span class="add">${fmt(f.interesAnio)}</span>
+            <span class="eq">=</span>
+            <span class="res">${fmt(f.balance)}</span>
+          </span>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function pintarGrafico(serie) {
+    const W = 520, H = 170, padL = 6, padR = 6, padT = 12, padB = 22;
+    const max = Math.max(...serie.map(s => s.balance), 1);
+    const n = serie.length - 1;
+    const x = i => padL + (i / n) * (W - padL - padR);
+    const y = v => padT + (1 - v / max) * (H - padT - padB);
+
+    const areaPath = (key) => {
+      let d = `M ${x(0)} ${y(serie[0][key])}`;
+      serie.forEach((s, i) => { d += ` L ${x(i)} ${y(s[key])}`; });
+      d += ` L ${x(n)} ${H - padB} L ${x(0)} ${H - padB} Z`;
+      return d;
+    };
+    const linePath = (key) => {
+      let d = `M ${x(0)} ${y(serie[0][key])}`;
+      serie.forEach((s, i) => { d += ` L ${x(i)} ${y(s[key])}`; });
+      return d;
+    };
+
+    let ticks = '';
+    const step = Math.max(1, Math.ceil(n / 6));
+    for (let i = 0; i <= n; i += step) {
+      ticks += `<text x="${x(i)}" y="${H - 6}" font-size="10" fill="#8a8a8a"
+        text-anchor="${i === 0 ? 'start' : i >= n - step/2 ? 'end' : 'middle'}"
+        font-family="Helvetica">${i === 0 ? 'Hoy' : 'A' + i}</text>`;
+    }
+
+    $('chart').innerHTML = `
+      <defs>
+        <linearGradient id="gTotal" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e3261d" stop-opacity="0.42"/>
+          <stop offset="100%" stop-color="#e3261d" stop-opacity="0.02"/>
+        </linearGradient>
+        <linearGradient id="gAporte" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#d8d8d8" stop-opacity="0.22"/>
+          <stop offset="100%" stop-color="#d8d8d8" stop-opacity="0.02"/>
+        </linearGradient>
+      </defs>
+      <path d="${areaPath('balance')}" fill="url(#gTotal)"/>
+      <path d="${areaPath('aportado')}" fill="url(#gAporte)"/>
+      <path d="${linePath('aportado')}" fill="none" stroke="#d8d8d8" stroke-width="1.8"
+        stroke-dasharray="4 3" stroke-linejoin="round"/>
+      <path d="${linePath('balance')}" fill="none" stroke="#e3261d" stroke-width="2.6"
+        stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${x(n)}" cy="${y(serie[n].balance)}" r="4.5" fill="#e3261d"
+        stroke="#000" stroke-width="2"/>
+      ${ticks}
+    `;
+  }
+
+  calcular();
+</script>
+</body>
+</html>
