@@ -14,8 +14,8 @@
     --line-soft: #1c1c1c;
     --text: #f2f2f2;
     --muted: #8a8a8a;
-    --red: #1f5fb8;
-    --red-bright: #d4b257;
+    --red: #b8ff3a;
+    --red-bright: #5ee9ff;
     --white-soft: #d8d8d8;
   }
 
@@ -401,7 +401,7 @@
       <div class="crest">R</div>
       <div class="brand-name">ROBERTO ESCOBAR CITTY</div>
     </div>
-    <div class="version">Versión 1.6</div>
+    <div class="version">Versión 1.7</div>
   </div>
 
   <header>
@@ -572,7 +572,7 @@
     un profesional antes de tomar decisiones de inversión.
   </p>
 
-  <div class="footer">Built by <strong>ROBERTO ESCOBAR CITTY</strong> &middot; Versión 1.6</div>
+  <div class="footer">Built by <strong>ROBERTO ESCOBAR CITTY</strong> &middot; Versión 1.7</div>
 
 </div>
 
@@ -695,8 +695,8 @@
     $('chart').innerHTML = `
       <defs>
         <linearGradient id="gTotal" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#1f5fb8" stop-opacity="0.42"/>
-          <stop offset="100%" stop-color="#1f5fb8" stop-opacity="0.02"/>
+          <stop offset="0%" stop-color="#b8ff3a" stop-opacity="0.42"/>
+          <stop offset="100%" stop-color="#b8ff3a" stop-opacity="0.02"/>
         </linearGradient>
         <linearGradient id="gAporte" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#d8d8d8" stop-opacity="0.22"/>
@@ -707,9 +707,9 @@
       <path d="${areaPath('aportado')}" fill="url(#gAporte)"/>
       <path d="${linePath('aportado')}" fill="none" stroke="#d8d8d8" stroke-width="1.8"
         stroke-dasharray="4 3" stroke-linejoin="round"/>
-      <path d="${linePath('balance')}" fill="none" stroke="#1f5fb8" stroke-width="2.6"
+      <path d="${linePath('balance')}" fill="none" stroke="#b8ff3a" stroke-width="2.6"
         stroke-linejoin="round" stroke-linecap="round"/>
-      <circle cx="${x(n)}" cy="${y(serie[n].balance)}" r="4.5" fill="#1f5fb8"
+      <circle cx="${x(n)}" cy="${y(serie[n].balance)}" r="4.5" fill="#b8ff3a"
         stroke="#000" stroke-width="2"/>
       ${ticks}
     `;
