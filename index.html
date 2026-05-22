@@ -583,11 +583,11 @@
       <table>
         <thead>
           <tr>
-            <th>Año</th>
-            <th>Aporte del año</th>
-            <th>Interés del año</th>
-            <th>Total aportado</th>
-            <th>Total acumulado &nbsp;=&nbsp; anterior + interés</th>
+            <th>#</th>
+            <th>Aporte</th>
+            <th>Interés</th>
+            <th>Total Apt.</th>
+            <th>Total Acm.</th>
           </tr>
         </thead>
         <tbody id="tabla"></tbody>
@@ -682,7 +682,7 @@
       const base = f.balanceIni + f.aporteAnio;
       return `
       <tr>
-        <td>Año ${f.anio}</td>
+        <td>${f.anio}</td>
         <td class="td-aporte">${fmt(f.aporteAnio)}</td>
         <td class="td-interes">${fmt(f.interesAnio)}</td>
         <td class="td-aporte">${fmt(f.aportado)}</td>
