@@ -137,6 +137,8 @@
     border-radius: 9px;
     padding: clamp(9px, 1.8vw, 14px) clamp(9px, 1.8vw, 15px);
     min-width: 0;
+    display: flex;
+    flex-direction: column;
   }
   .fund-top {
     display: flex;
@@ -147,7 +149,7 @@
   .fund-ticker { font-size: clamp(0.82rem, 2vw, 1.02rem); font-weight: 700; letter-spacing: 0.02em; }
   .fund-rate { font-size: clamp(0.82rem, 2vw, 1.02rem); font-weight: 700; color: var(--red); }
   .fund-name { font-size: clamp(0.6rem, 1.4vw, 0.73rem); color: var(--muted); margin-bottom: 11px; }
-  .fund-btns { display: flex; gap: clamp(4px, 1vw, 7px); }
+  .fund-btns { display: flex; gap: clamp(4px, 1vw, 7px); margin-top: auto; }
   .fund-btn {
     flex: 1;
     min-width: 0;
@@ -345,6 +347,43 @@
 
   svg { width: 100%; height: auto; display: block; }
 
+  /* ---- Pie chart ---- */
+  .pie-mini {
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--panel);
+    padding: clamp(11px, 2vw, 15px) clamp(12px, 2.4vw, 17px);
+    margin-top: 10px;
+  }
+  .pie-mini-head { margin-bottom: 10px; }
+  .pie-mini-body {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 3vw, 20px);
+  }
+  .pie-mini-body svg {
+    width: clamp(90px, 22vw, 120px);
+    height: clamp(90px, 22vw, 120px);
+    flex-shrink: 0;
+  }
+  .pie-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+  .pie-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: clamp(0.7rem, 1.5vw, 0.82rem);
+  }
+  .pie-label { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+  .pie-val { font-weight: 700; color: var(--text); font-size: clamp(0.78rem, 1.7vw, 0.92rem); }
+  .pie-row:last-child .pie-val { color: var(--red); }
+
   /* ---- Table ---- */
   .table-panel { padding: 0; overflow: hidden; }
   .table-head { padding: clamp(14px, 2.6vw, 22px) clamp(14px, 2.6vw, 22px) clamp(10px, 1.8vw, 15px); }
@@ -494,10 +533,10 @@
         <label>Con cuánto abres la cuenta</label>
         <div class="input-shell">
           <span class="affix left">$</span>
-          <input type="number" id="inicial" value="100" min="0" step="25">
+          <input type="number" id="inicial" value="200" min="0" step="25">
         </div>
         <div class="slider-row">
-          <input type="range" id="inicialSlider" value="100" min="25" max="1000" step="25">
+          <input type="range" id="inicialSlider" value="200" min="25" max="1000" step="25">
           <div class="range-val"><span>$25</span><span>$1,000</span></div>
         </div>
       </div>
@@ -519,11 +558,11 @@
           <span class="hint">— el % que crece cada año</span>
         </label>
         <div class="input-shell">
-          <input type="number" id="tasa" value="10" min="0" max="40" step="0.01">
+          <input type="number" id="tasa" value="12" min="0" max="40" step="0.01">
           <span class="affix right">%</span>
         </div>
         <div class="slider-row">
-          <input type="range" id="tasaSlider" value="10" min="0" max="40" step="0.5">
+          <input type="range" id="tasaSlider" value="12" min="0" max="40" step="0.5">
           <div class="range-val"><span>0%</span><span>40%</span></div>
         </div>
       </div>
@@ -531,11 +570,11 @@
       <div class="field">
         <label>Por cuántos años vas a invertir</label>
         <div class="input-shell">
-          <input type="number" id="anios" value="20" min="1" max="50" step="1">
+          <input type="number" id="anios" value="35" min="1" max="50" step="1">
           <span class="affix right">años</span>
         </div>
         <div class="slider-row">
-          <input type="range" id="aniosSlider" value="20" min="1" max="40" step="1">
+          <input type="range" id="aniosSlider" value="35" min="1" max="40" step="1">
           <div class="range-val"><span>1 año</span><span>40 años</span></div>
         </div>
       </div>
@@ -567,6 +606,25 @@
           </div>
         </div>
         <svg id="chart" viewBox="0 0 520 170" preserveAspectRatio="none"></svg>
+      </div>
+
+      <div class="pie-mini">
+        <div class="pie-mini-head">
+          <div class="chart-mini-title">De cada dólar al final</div>
+        </div>
+        <div class="pie-mini-body">
+          <svg id="pieChart" viewBox="0 0 120 120"></svg>
+          <div class="pie-legend">
+            <div class="pie-row">
+              <span class="pie-label"><i class="dot aporte"></i> Tus aportes</span>
+              <span class="pie-val" id="piePctAporte">0%</span>
+            </div>
+            <div class="pie-row">
+              <span class="pie-label"><i class="dot total"></i> Interés ganado</span>
+              <span class="pie-val" id="piePctInteres">0%</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -675,6 +733,7 @@
 
     pintarTabla(filas);
     pintarGrafico(serie);
+    pintarPie(aportado, interesTotal);
   }
 
   function pintarTabla(filas) {
@@ -746,6 +805,60 @@
       <circle cx="${x(n)}" cy="${y(serie[n].balance)}" r="4.5" fill="#ff7a1a"
         stroke="#000" stroke-width="2"/>
       ${ticks}
+    `;
+  }
+
+  function pintarPie(aportado, interes) {
+    const total = aportado + interes;
+    if (total <= 0) {
+      $('pieChart').innerHTML = '';
+      $('piePctAporte').textContent = '0%';
+      $('piePctInteres').textContent = '0%';
+      return;
+    }
+
+    const pctAporte = aportado / total;
+    const pctInteres = interes / total;
+
+    $('piePctAporte').textContent = (pctAporte * 100).toFixed(1) + '%';
+    $('piePctInteres').textContent = (pctInteres * 100).toFixed(1) + '%';
+
+    // Geometría del donut
+    const cx = 60, cy = 60, r = 50, rInner = 30;
+
+    // Si una porción es 100%, dibujar como círculo completo
+    if (pctAporte >= 0.9999 || pctInteres >= 0.9999) {
+      const color = pctInteres >= 0.9999 ? '#ff7a1a' : '#d8d8d8';
+      $('pieChart').innerHTML = `
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}"/>
+        <circle cx="${cx}" cy="${cy}" r="${rInner}" fill="#000"/>
+      `;
+      return;
+    }
+
+    // Arco de aportes (arriba, comenzando en 12 en punto)
+    const angAporte = pctAporte * Math.PI * 2;
+    const x1 = cx + r * Math.sin(angAporte);
+    const y1 = cy - r * Math.cos(angAporte);
+    const largeAporte = pctAporte > 0.5 ? 1 : 0;
+
+    // Arco de interés (resto)
+    const x2 = cx + r * Math.sin(angAporte);
+    const y2 = cy - r * Math.cos(angAporte);
+    const largeInteres = pctInteres > 0.5 ? 1 : 0;
+
+    const pathAporte = `M ${cx} ${cy - r}
+                        A ${r} ${r} 0 ${largeAporte} 1 ${x1} ${y1}
+                        L ${cx} ${cy} Z`;
+
+    const pathInteres = `M ${x2} ${y2}
+                         A ${r} ${r} 0 ${largeInteres} 1 ${cx} ${cy - r}
+                         L ${cx} ${cy} Z`;
+
+    $('pieChart').innerHTML = `
+      <path d="${pathAporte}" fill="#d8d8d8"/>
+      <path d="${pathInteres}" fill="#ff7a1a"/>
+      <circle cx="${cx}" cy="${cy}" r="${rInner}" fill="#000"/>
     `;
   }
 
