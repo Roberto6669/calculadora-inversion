@@ -2,867 +2,314 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
-<link rel="icon" type="image/png" href="logoR.png">
-<link rel="shortcut icon" type="image/png" href="logoR.png">
-<link rel="apple-touch-icon" href="logoR.png">
-<title>ROBERTO ESCOBAR CITTY · Calculadora de Interés Compuesto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Inversión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #000000;
-    --panel: #0c0c0c;
-    --panel-2: #131313;
-    --line: #242424;
-    --line-soft: #1c1c1c;
-    --text: #f2f2f2;
-    --muted: #8a8a8a;
-    --red: #ff7a1a;
-    --red-bright: #ffb547;
-    --book-red: #e3261d;
-    --book-red-hover: #c41f17;
-    --white-soft: #d8d8d8;
+  :root{
+    --bg:#0b0f17; --panel:#131a26; --panel-2:#0f1521;
+    --line:#1e2836; --line-soft:#171f2c;
+    --text:#e8edf4; --muted:#8b97a8; --muted-2:#5d6b7e;
+    --gain:#10b981; --gain-soft:#10b98122;
+    --capital:#3b82f6; --capital-soft:#3b82f622;
+    --accent:#10b981;
+    --radius:16px;
   }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{padding:clamp(16px,4vw,40px);min-height:100vh}
+  .wrap{max-width:960px;margin:0 auto}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* Header */
+  header{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+  header img{height:44px;width:auto;border-radius:8px}
+  .logo-fallback{height:44px;width:44px;border-radius:10px;background:linear-gradient(135deg,var(--gain),#0d9488);
+    display:grid;place-items:center;font-family:'Sora';font-weight:700;font-size:20px;color:#03130d}
+  header h1{font-family:'Sora';font-weight:600;font-size:clamp(18px,3vw,24px);letter-spacing:-.02em}
+  header .sub{color:var(--muted);font-size:13px;margin-top:2px}
 
-  body {
-    font-family: Helvetica, Verdana, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    min-height: 100vh;
-    padding: 26px 14px 60px;
-    -webkit-font-smoothing: antialiased;
-  }
+  /* Fund chips */
+  .funds{margin-bottom:24px}
+  .funds-label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-2);margin-bottom:10px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;
+    cursor:pointer;transition:.18s;display:flex;flex-direction:column;gap:2px;min-width:96px}
+  .chip:hover{border-color:#2c3a4f;transform:translateY(-1px)}
+  .chip.active{border-color:var(--gain);background:var(--gain-soft)}
+  .chip .ticker{font-family:'Sora';font-weight:600;font-size:14px;letter-spacing:.01em}
+  .chip .ret{font-size:13px;color:var(--gain);font-variant-numeric:tabular-nums}
+  .chip.active .ret{color:var(--gain)}
+  .chip .ret.na{color:var(--muted-2)}
 
-  .wrap { max-width: 1000px; margin: 0 auto; }
+  /* Layout */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
 
-  /* ---- Brand bar ---- */
-  .brand {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 16px;
-    margin-bottom: 26px;
-    border-bottom: 1px solid var(--line);
-  }
-  .brand-name {
-    font-size: 1.02rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text);
-  }
-  .brand-mark { display: flex; align-items: center; gap: 9px; }
-  .crest {
-    width: 36px; height: 36px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .crest img { width: 100%; height: 100%; object-fit: contain; display: block; }
-  .brand-right { display: flex; align-items: center; gap: 10px; }
-  .book-btn {
-    font-family: Helvetica, Verdana, Arial, sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #fff;
-    background: var(--book-red);
-    border: 1px solid var(--book-red);
-    padding: 7px 13px;
-    border-radius: 5px;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: background 0.15s;
-    cursor: pointer;
-  }
-  .book-btn:hover { background: var(--book-red-hover); }
-  @media (max-width: 520px) {
-    .book-btn { font-size: 0.64rem; padding: 6px 9px; letter-spacing: 0.05em; }
-  }
-  .version {
-    font-size: 0.66rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--red);
-    border: 1px solid var(--red);
-    padding: 5px 11px;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
+  /* Controls */
+  .control{margin-bottom:22px}
+  .control:last-child{margin-bottom:0}
+  .control .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+  .control label{font-size:13px;color:var(--muted)}
+  .val-input{font-family:'Sora';font-weight:600;font-size:18px;color:var(--text);background:transparent;
+    border:none;text-align:right;width:140px;font-variant-numeric:tabular-nums;outline:none}
+  .val-input:focus{color:var(--gain)}
+  .val-suffix{color:var(--muted);font-size:14px;margin-left:2px}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:4px;
+    background:var(--line);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;
+    border-radius:50%;background:var(--gain);border:3px solid var(--bg);cursor:pointer;
+    box-shadow:0 0 0 1px var(--gain)}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--gain);
+    border:3px solid var(--bg);cursor:pointer;box-shadow:0 0 0 1px var(--gain)}
 
-  /* ---- Header ---- */
-  header { margin-bottom: 24px; }
-  .eyebrow {
-    font-size: 0.68rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 11px;
-    font-weight: 700;
-  }
-  h1 {
-    font-weight: 700;
-    font-size: clamp(1.7rem, 4.8vw, 2.7rem);
-    line-height: 1.12;
-    letter-spacing: -0.02em;
-  }
-  h1 em { font-style: normal; color: var(--red); }
-  .sub {
-    color: var(--muted);
-    font-size: 0.95rem;
-    max-width: 540px;
-    margin-top: 11px;
-  }
+  /* Result side */
+  .result{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .donut-wrap{position:relative;width:200px;height:200px;margin-bottom:8px}
+  .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .donut-center .tag{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-2)}
+  .donut-center .fv{font-family:'Sora';font-weight:700;font-size:clamp(22px,5vw,30px);letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums;margin-top:2px}
+  circle.seg{transition:stroke-dasharray .6s cubic-bezier(.4,0,.2,1)}
 
-  /* ---- Fund shortcuts ---- */
-  .funds { margin-bottom: 16px; }
-  .funds-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-  .fund-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(6px, 1.4vw, 10px);
-  }
-  .fund-card {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 9px;
-    padding: clamp(9px, 1.8vw, 14px) clamp(9px, 1.8vw, 15px);
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  .fund-top {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 3px;
-  }
-  .fund-ticker { font-size: clamp(0.82rem, 2vw, 1.02rem); font-weight: 700; letter-spacing: 0.02em; }
-  .fund-rate { font-size: clamp(0.82rem, 2vw, 1.02rem); font-weight: 700; color: var(--red); }
-  .fund-name { font-size: clamp(0.6rem, 1.4vw, 0.73rem); color: var(--muted); margin-bottom: 11px; }
-  .fund-btns { display: flex; gap: clamp(4px, 1vw, 7px); margin-top: auto; }
-  .fund-btn {
-    flex: 1;
-    min-width: 0;
-    font-family: Helvetica, Verdana, Arial, sans-serif;
-    font-size: clamp(0.6rem, 1.4vw, 0.74rem);
-    font-weight: 700;
-    padding: clamp(7px, 1.4vw, 9px) clamp(3px, 0.8vw, 6px);
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    transition: opacity 0.15s, background 0.15s;
-    line-height: 1.2;
-  }
-  .fund-btn.use { background: var(--red); color: #fff; border: 1px solid var(--red); }
-  .fund-btn.use:hover { opacity: 0.85; }
-  .fund-btn.yahoo { background: transparent; color: var(--text); border: 1px solid var(--line); }
-  .fund-btn.yahoo:hover { background: var(--panel-2); }
+  .legend{display:flex;gap:20px;margin-top:14px}
+  .legend .item{display:flex;align-items:center;gap:8px;font-size:13px}
+  .dot{width:10px;height:10px;border-radius:3px}
+  .dot.cap{background:var(--capital)} .dot.gn{background:var(--gain)}
+  .legend .item .amt{font-family:'Sora';font-weight:600;font-variant-numeric:tabular-nums}
+  .legend .item .lbl{color:var(--muted);font-size:12px;display:block}
 
-  /* ---- Layout: FIJO lado a lado ---- */
-  .grid {
-    display: grid;
-    grid-template-columns: 0.92fr 1.08fr;
-    gap: 14px;
-    margin-bottom: 16px;
-    align-items: start;
-  }
+  /* Table */
+  .table-card{margin-top:20px}
+  .table-card h2{font-family:'Sora';font-weight:600;font-size:15px;margin-bottom:14px;color:var(--text)}
+  .tbl-scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+  th{text-align:right;color:var(--muted-2);font-weight:500;font-size:11px;text-transform:uppercase;
+    letter-spacing:.05em;padding:8px 12px;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  td{padding:9px 12px;border-bottom:1px solid var(--line-soft)}
+  tr:last-child td{border-bottom:none}
+  td.year{font-family:'Sora';font-weight:600;color:var(--text)}
+  td.gain{color:var(--gain)}
+  td.total{font-weight:600}
 
-  .panel {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: clamp(13px, 2.4vw, 24px);
-  }
-
-  .panel-title {
-    font-size: clamp(0.95rem, 2.2vw, 1.15rem);
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-  .panel-note {
-    font-size: clamp(0.7rem, 1.5vw, 0.84rem);
-    color: var(--muted);
-    margin-bottom: clamp(13px, 2.4vw, 22px);
-  }
-
-  /* ---- Inputs ---- */
-  .field { margin-bottom: clamp(13px, 2.4vw, 20px); }
-  .field:last-child { margin-bottom: 0; }
-
-  label {
-    display: block;
-    font-size: clamp(0.74rem, 1.7vw, 0.86rem);
-    font-weight: 700;
-    margin-bottom: 7px;
-    color: var(--text);
-  }
-  .hint { font-weight: 400; color: var(--muted); font-size: 0.92em; }
-
-  .input-shell {
-    display: flex;
-    align-items: center;
-    border: 1px solid var(--line);
-    border-radius: 7px;
-    background: #000;
-    overflow: hidden;
-    transition: border-color 0.15s;
-  }
-  .input-shell:focus-within { border-color: var(--red); }
-  .affix {
-    padding: 0 clamp(8px, 1.6vw, 13px);
-    color: var(--red);
-    font-weight: 700;
-    font-size: clamp(0.8rem, 1.7vw, 0.92rem);
-    background: var(--panel-2);
-    align-self: stretch;
-    display: flex; align-items: center;
-  }
-  .affix.right { border-left: 1px solid var(--line); }
-  .affix.left { border-right: 1px solid var(--line); }
-
-  input[type="number"] {
-    border: none; outline: none;
-    padding: clamp(9px, 1.8vw, 12px);
-    font-family: Helvetica, Verdana, Arial, sans-serif;
-    font-size: clamp(0.9rem, 2vw, 1.05rem);
-    font-weight: 700;
-    color: var(--text);
-    width: 100%;
-    background: transparent;
-    -moz-appearance: textfield;
-    min-width: 0;
-  }
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-
-  .slider-row { margin-top: 11px; }
-  input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 3px;
-    border-radius: 3px;
-    background: var(--line);
-    outline: none;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: var(--red);
-    border: 3px solid #000;
-    box-shadow: 0 0 0 1px var(--red);
-    cursor: pointer;
-  }
-  input[type="range"]::-moz-range-thumb {
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: var(--red);
-    border: 3px solid #000;
-    cursor: pointer;
-  }
-  .range-val {
-    display: flex; justify-content: space-between;
-    font-size: clamp(0.66rem, 1.4vw, 0.76rem); color: var(--muted);
-    margin-top: 5px;
-  }
-
-  /* ---- Results ---- */
-  .results { display: flex; flex-direction: column; gap: 11px; }
-
-  .hero-result {
-    background: var(--panel);
-    border: 1px solid var(--red);
-    border-radius: 9px;
-    padding: clamp(14px, 2.6vw, 21px) clamp(15px, 2.8vw, 23px);
-  }
-  .res-label {
-    font-size: clamp(0.62rem, 1.4vw, 0.74rem);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 700;
-  }
-  .hero-num {
-    font-weight: 700;
-    font-size: clamp(1.7rem, 5.4vw, 2.9rem);
-    line-height: 1.05;
-    margin-top: 5px;
-    color: var(--red-bright);
-    letter-spacing: -0.02em;
-  }
-
-  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-  .mini {
-    border: 1px solid var(--line);
-    border-radius: 9px;
-    padding: clamp(11px, 2vw, 15px) clamp(12px, 2.2vw, 16px);
-    background: var(--panel);
-  }
-  .mini-num {
-    font-weight: 700;
-    font-size: clamp(1.05rem, 2.8vw, 1.45rem);
-    margin-top: 3px;
-    letter-spacing: -0.02em;
-  }
-  .mini.aporte .mini-num { color: var(--text); }
-  .mini.interes .mini-num { color: var(--red); }
-
-  .multiplier {
-    text-align: center;
-    font-size: clamp(0.72rem, 1.6vw, 0.85rem);
-    color: var(--muted);
-    padding: 2px 4px;
-  }
-  .multiplier strong { color: var(--red); font-weight: 700; }
-
-  /* ---- Mini chart ---- */
-  .chart-mini {
-    border: 1px solid var(--line);
-    border-radius: 9px;
-    background: var(--panel);
-    padding: clamp(11px, 2vw, 15px) clamp(12px, 2.4vw, 17px) 9px;
-  }
-  .chart-mini-head {
-    display: flex; justify-content: space-between;
-    align-items: baseline; flex-wrap: wrap; gap: 6px;
-    margin-bottom: 8px;
-  }
-  .chart-mini-title { font-size: clamp(0.84rem, 1.9vw, 0.98rem); font-weight: 700; }
-  .legend { display: flex; gap: 11px; font-size: clamp(0.64rem, 1.4vw, 0.73rem); color: var(--muted); }
-  .legend span { display: flex; align-items: center; gap: 5px; }
-  .dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
-  .dot.aporte { background: var(--white-soft); }
-  .dot.total { background: var(--red); }
-
-  svg { width: 100%; height: auto; display: block; }
-
-  /* ---- Pie chart ---- */
-  .pie-mini {
-    border: 1px solid var(--line);
-    border-radius: 9px;
-    background: var(--panel);
-    padding: clamp(11px, 2vw, 15px) clamp(12px, 2.4vw, 17px);
-    margin-top: 10px;
-  }
-  .pie-mini-head { margin-bottom: 10px; }
-  .pie-mini-body {
-    display: flex;
-    align-items: center;
-    gap: clamp(12px, 3vw, 20px);
-  }
-  .pie-mini-body svg {
-    width: clamp(90px, 22vw, 120px);
-    height: clamp(90px, 22vw, 120px);
-    flex-shrink: 0;
-  }
-  .pie-legend {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-width: 0;
-  }
-  .pie-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    font-size: clamp(0.7rem, 1.5vw, 0.82rem);
-  }
-  .pie-label { display: flex; align-items: center; gap: 6px; color: var(--muted); }
-  .pie-val { font-weight: 700; color: var(--text); font-size: clamp(0.78rem, 1.7vw, 0.92rem); }
-  .pie-row:last-child .pie-val { color: var(--red); }
-
-  /* ---- Table ---- */
-  .table-panel { padding: 0; overflow: hidden; }
-  .table-head { padding: clamp(14px, 2.6vw, 22px) clamp(14px, 2.6vw, 22px) clamp(10px, 1.8vw, 15px); }
-  .table-scroll { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: clamp(0.66rem, 1.6vw, 0.87rem); }
-  thead th {
-    text-align: right;
-    padding: clamp(7px, 1.4vw, 12px) clamp(6px, 1.4vw, 16px);
-    font-size: clamp(0.56rem, 1.3vw, 0.69rem);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 700;
-    background: #000;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    white-space: nowrap;
-  }
-  thead th:first-child { text-align: left; }
-  tbody td {
-    text-align: right;
-    padding: clamp(8px, 1.6vw, 13px) clamp(6px, 1.4vw, 16px);
-    border-bottom: 1px solid var(--line-soft);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
-  tbody td:first-child {
-    text-align: left;
-    font-weight: 700;
-    color: var(--red);
-  }
-  tbody tr:last-child td { border-bottom: none; }
-  tbody tr:hover { background: rgba(227,38,29,0.06); }
-  .td-aporte { color: var(--text); }
-  .td-interes { color: var(--red); font-weight: 700; }
-
-  /* suma visual */
-  .sum {
-    display: inline-flex;
-    align-items: baseline;
-    gap: clamp(3px, 0.8vw, 5px);
-    justify-content: flex-end;
-    flex-wrap: nowrap;
-    font-variant-numeric: tabular-nums;
-  }
-  .sum .prev { color: var(--white-soft); font-weight: 700; }
-  .sum .op { color: var(--muted); font-weight: 400; font-size: 0.85em; }
-  .sum .add { color: var(--red); font-weight: 700; }
-  .sum .eq { color: var(--muted); font-weight: 400; font-size: 0.85em; }
-  .sum .res { color: #fff; font-weight: 700; font-size: 1.08em; }
-
-  /* ---- Disclaimer ---- */
-  .disclaimer {
-    margin-top: 22px;
-    font-size: 0.77rem;
-    color: var(--muted);
-    line-height: 1.6;
-    max-width: 700px;
-  }
-  .disclaimer strong { color: var(--text); font-weight: 700; }
-
-  .footer {
-    text-align: center;
-    margin-top: 32px;
-    font-size: 0.76rem;
-    color: var(--muted);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-  .footer-logo { width: 70px; height: 70px; }
-  .footer-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-  .footer strong { color: var(--red); }
+  .meta{margin-top:18px;font-size:12px;color:var(--muted-2);text-align:center}
+  .meta b{color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="brand">
-    <div class="brand-mark">
-      <div class="crest"><img src="logoR.png" alt="Roberto Escobar Citty"></div>
-      <div class="brand-name">ROBERTO ESCOBAR CITTY</div>
-    </div>
-    <div class="brand-right">
-      <a class="book-btn" href="https://therealhowmoneyworks.com/us/roberto_escobar" target="_blank" rel="noopener">Solicite un Libro</a>
-      <div class="version">Versión 2.2</div>
-    </div>
-  </div>
-
   <header>
-    <div class="eyebrow">Educación Financiera</div>
-    <h1>Mira crecer <em>tu dinero</em></h1>
-    <p class="sub">Descubre cuánto puedes acumular con el poder del interés compuesto. Ajusta los números y observa el resultado al instante.</p>
+    <img src="logoR.png" alt="logo" onerror="this.outerHTML='<div class=&quot;logo-fallback&quot;>R</div>'">
+    <div>
+      <h1>Calculadora de Inversión</h1>
+      <div class="sub">Interés compuesto con aportes mensuales</div>
+    </div>
   </header>
 
-  <!-- FONDOS -->
   <div class="funds">
-    <div class="funds-label">Fondos de alto rendimiento — toca para usar la tasa de ejemplo</div>
-    <div class="fund-row">
-
-      <div class="fund-card">
-        <div class="fund-top">
-          <span class="fund-ticker">FELAX</span>
-          <span class="fund-rate">35.29%</span>
-        </div>
-        <div class="fund-name">Fidelity Adv Semiconductors A</div>
-        <div class="fund-btns">
-          <button class="fund-btn use" onclick="usarFondo(35.29)">Usar esta tasa</button>
-          <a class="fund-btn yahoo" href="https://finance.yahoo.com/quote/FELAX/performance/" target="_blank" rel="noopener">Ver en Yahoo</a>
-        </div>
-      </div>
-
-      <div class="fund-card">
-        <div class="fund-top">
-          <span class="fund-ticker">FKDNX</span>
-          <span class="fund-rate">17.87%</span>
-        </div>
-        <div class="fund-name">Franklin DynaTech A</div>
-        <div class="fund-btns">
-          <button class="fund-btn use" onclick="usarFondo(17.87)">Usar esta tasa</button>
-          <a class="fund-btn yahoo" href="https://finance.yahoo.com/quote/FKDNX/performance/" target="_blank" rel="noopener">Ver en Yahoo</a>
-        </div>
-      </div>
-
-      <div class="fund-card">
-        <div class="fund-top">
-          <span class="fund-ticker">VADAX</span>
-          <span class="fund-rate">11.38%</span>
-        </div>
-        <div class="fund-name">Invesco Diversified Dividend A</div>
-        <div class="fund-btns">
-          <button class="fund-btn use" onclick="usarFondo(11.38)">Usar esta tasa</button>
-          <a class="fund-btn yahoo" href="https://finance.yahoo.com/quote/VADAX/performance/" target="_blank" rel="noopener">Ver en Yahoo</a>
-        </div>
-      </div>
-
-    </div>
+    <div class="funds-label">Elige un fondo — usa su rendimiento real a 10 años</div>
+    <div class="chips" id="chips"></div>
   </div>
 
   <div class="grid">
-    <div class="panel">
-      <div class="panel-title">Tus datos</div>
-      <div class="panel-note">Llena los campos según tu plan de ahorro.</div>
-
-      <div class="field">
-        <label>Con cuánto abres la cuenta</label>
-        <div class="input-shell">
-          <span class="affix left">$</span>
-          <input type="number" id="inicial" value="200" min="0" step="25">
+    <!-- Controles -->
+    <div class="card">
+      <div class="control">
+        <div class="top">
+          <label for="r-inicial">Capital inicial</label>
+          <div><span class="val-suffix">$</span><input class="val-input" id="inicial" type="text" inputmode="numeric" value="1,000"></div>
         </div>
-        <div class="slider-row">
-          <input type="range" id="inicialSlider" value="200" min="25" max="1000" step="25">
-          <div class="range-val"><span>$25</span><span>$1,000</span></div>
-        </div>
+        <input type="range" id="r-inicial" min="0" max="100000" step="500" value="1000">
       </div>
 
-      <div class="field">
-        <label>Cuánto aportas cada mes</label>
-        <div class="input-shell">
-          <span class="affix left">$</span>
-          <input type="number" id="mensual" value="200" min="0" step="25">
+      <div class="control">
+        <div class="top">
+          <label for="r-mensual">Aporte mensual</label>
+          <div><span class="val-suffix">$</span><input class="val-input" id="mensual" type="text" inputmode="numeric" value="250"></div>
         </div>
-        <div class="slider-row">
-          <input type="range" id="mensualSlider" value="200" min="25" max="2000" step="25">
-          <div class="range-val"><span>$25</span><span>$2,000</span></div>
-        </div>
+        <input type="range" id="r-mensual" min="0" max="5000" step="25" value="250">
       </div>
 
-      <div class="field">
-        <label>Rendimiento anual estimado
-          <span class="hint">— el % que crece cada año</span>
-        </label>
-        <div class="input-shell">
-          <input type="number" id="tasa" value="12" min="0" max="40" step="0.01">
-          <span class="affix right">%</span>
+      <div class="control">
+        <div class="top">
+          <label for="r-anos">Plazo</label>
+          <div><input class="val-input" id="anos" type="text" inputmode="numeric" value="20"><span class="val-suffix">años</span></div>
         </div>
-        <div class="slider-row">
-          <input type="range" id="tasaSlider" value="12" min="0" max="40" step="0.5">
-          <div class="range-val"><span>0%</span><span>40%</span></div>
-        </div>
+        <input type="range" id="r-anos" min="1" max="40" step="1" value="20">
       </div>
 
-      <div class="field">
-        <label>Por cuántos años vas a invertir</label>
-        <div class="input-shell">
-          <input type="number" id="anios" value="35" min="1" max="50" step="1">
-          <span class="affix right">años</span>
+      <div class="control">
+        <div class="top">
+          <label for="r-tasa">Rendimiento anual</label>
+          <div><input class="val-input" id="tasa" type="text" inputmode="decimal" value="7.0"><span class="val-suffix">%</span></div>
         </div>
-        <div class="slider-row">
-          <input type="range" id="aniosSlider" value="35" min="1" max="40" step="1">
-          <div class="range-val"><span>1 año</span><span>40 años</span></div>
-        </div>
+        <input type="range" id="r-tasa" min="0" max="20" step="0.1" value="7">
       </div>
     </div>
 
-    <div class="results">
-      <div class="hero-result">
-        <div class="res-label">Valor final de tu inversión</div>
-        <div class="hero-num" id="rValor">$0</div>
+    <!-- Resultado -->
+    <div class="card result">
+      <div class="donut-wrap">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <g transform="rotate(-90 100 100)">
+            <circle cx="100" cy="100" r="80" fill="none" stroke="var(--line)" stroke-width="20"/>
+            <circle class="seg" id="seg-cap" cx="100" cy="100" r="80" fill="none" stroke="var(--capital)" stroke-width="20" stroke-linecap="butt"/>
+            <circle class="seg" id="seg-gain" cx="100" cy="100" r="80" fill="none" stroke="var(--gain)" stroke-width="20" stroke-linecap="butt"/>
+          </g>
+        </svg>
+        <div class="donut-center">
+          <span class="tag">Valor final</span>
+          <span class="fv" id="fv">$0</span>
+        </div>
       </div>
-      <div class="split">
-        <div class="mini aporte">
-          <div class="res-label">Lo que tú pusiste</div>
-          <div class="mini-num" id="rAporte">$0</div>
-        </div>
-        <div class="mini interes">
-          <div class="res-label">Ganado en intereses</div>
-          <div class="mini-num" id="rInteres">$0</div>
-        </div>
-      </div>
-      <div class="multiplier" id="rMult"></div>
-
-      <div class="chart-mini">
-        <div class="chart-mini-head">
-          <div class="chart-mini-title">Cómo crece tu dinero</div>
-          <div class="legend">
-            <span><i class="dot aporte"></i> Tus aportes</span>
-            <span><i class="dot total"></i> Valor total</span>
-          </div>
-        </div>
-        <svg id="chart" viewBox="0 0 520 170" preserveAspectRatio="none"></svg>
-      </div>
-
-      <div class="pie-mini">
-        <div class="pie-mini-head">
-          <div class="chart-mini-title">De cada dólar al final</div>
-        </div>
-        <div class="pie-mini-body">
-          <svg id="pieChart" viewBox="0 0 120 120"></svg>
-          <div class="pie-legend">
-            <div class="pie-row">
-              <span class="pie-label"><i class="dot aporte"></i> Tus aportes</span>
-              <span class="pie-val" id="piePctAporte">0%</span>
-            </div>
-            <div class="pie-row">
-              <span class="pie-label"><i class="dot total"></i> Interés ganado</span>
-              <span class="pie-val" id="piePctInteres">0%</span>
-            </div>
-          </div>
-        </div>
+      <div class="legend">
+        <div class="item"><span class="dot cap"></span><div><span class="amt" id="leg-cap">$0</span><span class="lbl">Aportado</span></div></div>
+        <div class="item"><span class="dot gn"></span><div><span class="amt" id="leg-gain">$0</span><span class="lbl">Ganancias</span></div></div>
       </div>
     </div>
   </div>
 
-  <div class="panel table-panel">
-    <div class="table-head">
-      <div class="panel-title">Detalle de cada año</div>
-      <div class="panel-note" style="margin:0">
-        Mira cómo el total del año anterior <strong style="color:var(--text)">más</strong> el interés ganado
-        se convierten en tu nuevo total acumulado.
-      </div>
-    </div>
-    <div class="table-scroll">
+  <!-- Tabla -->
+  <div class="card table-card">
+    <h2>Crecimiento año por año</h2>
+    <div class="tbl-scroll">
       <table>
         <thead>
-          <tr>
-            <th>#</th>
-            <th>Aporte</th>
-            <th>Interés</th>
-            <th>Total Apt.</th>
-            <th>Total Acm.</th>
-          </tr>
+          <tr><th>Año</th><th>Aportado</th><th>Ganancias</th><th>Balance</th></tr>
         </thead>
-        <tbody id="tabla"></tbody>
+        <tbody id="tbody"></tbody>
       </table>
     </div>
   </div>
 
-  <p class="disclaimer">
-    <strong>Nota importante:</strong> esta calculadora es solo una herramienta educativa para ilustrar
-    cómo funciona el interés compuesto. Las tasas mostradas son ejemplos y los resultados son estimaciones
-    basadas en la tasa que se ingresa; no garantizan rendimientos. Las inversiones reales suben y bajan
-    cada año y el rendimiento pasado no predice el futuro. No constituye asesoría financiera. Consulta a
-    un profesional antes de tomar decisiones de inversión.
-  </p>
-
-  <div class="footer">
-    <div class="footer-logo"><img src="logoR.png" alt="Roberto Escobar Citty"></div>
-    <div>Built by <strong>ROBERTO ESCOBAR CITTY</strong> &middot; Versión 2.2</div>
-  </div>
+  <div class="meta" id="meta"></div>
 
 </div>
 
 <script>
-  const $ = id => document.getElementById(id);
-  const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+const C = 2 * Math.PI * 80; // circunferencia del donut
 
-  function link(input, slider) {
-    input.addEventListener('input', () => {
-      const v = parseFloat(input.value);
-      if (!isNaN(v)) slider.value = Math.min(slider.max, Math.max(slider.min, v));
-      calcular();
-    });
-    slider.addEventListener('input', () => {
-      input.value = slider.value;
-      calcular();
-    });
-  }
-  link($('inicial'), $('inicialSlider'));
-  link($('mensual'), $('mensualSlider'));
-  link($('tasa'), $('tasaSlider'));
-  link($('anios'), $('aniosSlider'));
+// Fallback embebido si fund_returns.json no carga (ej. file://).
+// Regenera el JSON real con update_returns.py.
+let FUNDS = {
+  FELAX:{r:null}, FKDNX:{r:null}, VADAX:{r:null}, FOCPX:{r:null}, FNIAX:{r:null}
+};
+let SOURCE = "valores manuales";
 
-  function usarFondo(tasa) {
-    $('tasa').value = tasa;
-    $('tasaSlider').value = Math.min($('tasaSlider').max, Math.max($('tasaSlider').min, tasa));
-    calcular();
-    document.querySelector('.grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  function calcular() {
-    const inicial = Math.max(0, parseFloat($('inicial').value) || 0);
-    const mensual = Math.max(0, parseFloat($('mensual').value) || 0);
-    const tasa    = Math.max(0, parseFloat($('tasa').value) || 0) / 100;
-    const anios   = Math.max(1, Math.min(50, parseInt($('anios').value) || 1));
-
-    const rMensual = tasa / 12;
-    let balance = inicial;
-    let aportado = inicial;
-    const filas = [];
-    const serie = [{ balance: inicial, aportado: inicial }];
-
-    for (let a = 1; a <= anios; a++) {
-      const balanceIni = balance;
-      let interesAnio = 0;
-      for (let m = 0; m < 12; m++) {
-        const interesMes = balance * rMensual;
-        interesAnio += interesMes;
-        balance += interesMes + mensual;
-      }
-      const aporteAnio = mensual * 12;
-      aportado += aporteAnio;
-      filas.push({ anio: a, aporteAnio, interesAnio, aportado, balanceIni, balance });
-      serie.push({ balance, aportado });
+// ── Carga rendimientos reales ────────────────────────────────────────────────
+async function loadFunds(){
+  try{
+    const res = await fetch('fund_returns.json', {cache:'no-store'});
+    if(!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    const next = {};
+    for(const [tk, info] of Object.entries(data.funds || {})){
+      const r10 = info?.returns?.['10y'];
+      next[tk] = {r: (typeof r10 === 'number') ? r10 : null};
     }
-
-    const interesTotal = balance - aportado;
-    $('rValor').textContent   = fmt(balance);
-    $('rAporte').textContent  = fmt(aportado);
-    $('rInteres').textContent = fmt(interesTotal);
-
-    const mult = aportado > 0 ? (balance / aportado) : 0;
-    $('rMult').innerHTML = 'Tu dinero se multiplicó por <strong>' + mult.toFixed(1) + '×</strong> — '
-      + 'de cada dólar que pusiste, el interés generó <strong>$'
-      + (mult - 1).toFixed(2) + '</strong> extra.';
-
-    pintarTabla(filas);
-    pintarGrafico(serie);
-    pintarPie(aportado, interesTotal);
+    if(Object.keys(next).length) FUNDS = next;
+    SOURCE = `${data.source || 'yfinance'} · actualizado ${data.as_of || ''}`;
+  }catch(e){
+    SOURCE = "valores de ejemplo (corre update_returns.py para datos reales)";
   }
+  renderChips();
+  document.getElementById('meta').innerHTML =
+    `Datos: <b>${SOURCE}</b>. El rendimiento pasado no garantiza resultados futuros.`;
+}
 
-  function pintarTabla(filas) {
-    $('tabla').innerHTML = filas.map(f => {
-      const base = f.balanceIni + f.aporteAnio;
-      return `
-      <tr>
-        <td>${f.anio}</td>
-        <td class="td-aporte">${fmt(f.aporteAnio)}</td>
-        <td class="td-interes">${fmt(f.interesAnio)}</td>
-        <td class="td-aporte">${fmt(f.aportado)}</td>
-        <td>
-          <span class="sum">
-            <span class="prev">${fmt(base)}</span>
-            <span class="op">+</span>
-            <span class="add">${fmt(f.interesAnio)}</span>
-            <span class="eq">=</span>
-            <span class="res">${fmt(f.balance)}</span>
-          </span>
-        </td>
-      </tr>`;
-    }).join('');
-  }
-
-  function pintarGrafico(serie) {
-    const W = 520, H = 170, padL = 6, padR = 6, padT = 12, padB = 22;
-    const max = Math.max(...serie.map(s => s.balance), 1);
-    const n = serie.length - 1;
-    const x = i => padL + (i / n) * (W - padL - padR);
-    const y = v => padT + (1 - v / max) * (H - padT - padB);
-
-    const areaPath = (key) => {
-      let d = `M ${x(0)} ${y(serie[0][key])}`;
-      serie.forEach((s, i) => { d += ` L ${x(i)} ${y(s[key])}`; });
-      d += ` L ${x(n)} ${H - padB} L ${x(0)} ${H - padB} Z`;
-      return d;
+// ── Chips de fondos ──────────────────────────────────────────────────────────
+function renderChips(){
+  const c = document.getElementById('chips');
+  c.innerHTML = '';
+  for(const [tk, info] of Object.entries(FUNDS)){
+    const el = document.createElement('div');
+    el.className = 'chip';
+    el.dataset.ticker = tk;
+    const retTxt = (info.r != null) ? info.r.toFixed(2) + '%' : 'n/d';
+    el.innerHTML = `<span class="ticker">${tk}</span>
+      <span class="ret ${info.r==null?'na':''}">${retTxt}</span>`;
+    el.onclick = () => {
+      if(info.r == null) return;
+      document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+      el.classList.add('active');
+      setTasa(info.r);
     };
-    const linePath = (key) => {
-      let d = `M ${x(0)} ${y(serie[0][key])}`;
-      serie.forEach((s, i) => { d += ` L ${x(i)} ${y(s[key])}`; });
-      return d;
-    };
+    c.appendChild(el);
+  }
+}
 
-    let ticks = '';
-    const step = Math.max(1, Math.ceil(n / 6));
-    for (let i = 0; i <= n; i += step) {
-      ticks += `<text x="${x(i)}" y="${H - 6}" font-size="10" fill="#8a8a8a"
-        text-anchor="${i === 0 ? 'start' : i >= n - step/2 ? 'end' : 'middle'}"
-        font-family="Helvetica">${i === 0 ? 'Hoy' : 'A' + i}</text>`;
+// ── Sincronización slider <-> input ──────────────────────────────────────────
+function parseNum(s){ return parseFloat(String(s).replace(/[^0-9.]/g,'')) || 0; }
+
+function link(rangeId, inputId, fmtInput){
+  const range = document.getElementById(rangeId);
+  const input = document.getElementById(inputId);
+  range.addEventListener('input', ()=>{ input.value = fmtInput(+range.value); calc(); });
+  input.addEventListener('input', ()=>{ range.value = parseNum(input.value); calc(); });
+  input.addEventListener('blur', ()=>{ input.value = fmtInput(parseNum(input.value)); });
+}
+function setTasa(v){
+  document.getElementById('r-tasa').value = v;
+  document.getElementById('tasa').value = (+v).toFixed(1);
+  calc();
+}
+
+// ── Cálculo de interés compuesto ─────────────────────────────────────────────
+function calc(){
+  const P    = parseNum(document.getElementById('inicial').value);
+  const PMT  = parseNum(document.getElementById('mensual').value);
+  const anos = Math.max(1, Math.round(parseNum(document.getElementById('anos').value)));
+  const rate = parseNum(document.getElementById('tasa').value) / 100;
+  const i = rate / 12;
+
+  const rows = [];
+  let balance = P, aportado = P;
+  for(let y = 1; y <= anos; y++){
+    for(let m = 0; m < 12; m++){
+      balance = balance * (1 + i) + PMT;
+      aportado += PMT;
     }
-
-    $('chart').innerHTML = `
-      <defs>
-        <linearGradient id="gTotal" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#ff7a1a" stop-opacity="0.42"/>
-          <stop offset="100%" stop-color="#ff7a1a" stop-opacity="0.02"/>
-        </linearGradient>
-        <linearGradient id="gAporte" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#d8d8d8" stop-opacity="0.22"/>
-          <stop offset="100%" stop-color="#d8d8d8" stop-opacity="0.02"/>
-        </linearGradient>
-      </defs>
-      <path d="${areaPath('balance')}" fill="url(#gTotal)"/>
-      <path d="${areaPath('aportado')}" fill="url(#gAporte)"/>
-      <path d="${linePath('aportado')}" fill="none" stroke="#d8d8d8" stroke-width="1.8"
-        stroke-dasharray="4 3" stroke-linejoin="round"/>
-      <path d="${linePath('balance')}" fill="none" stroke="#ff7a1a" stroke-width="2.6"
-        stroke-linejoin="round" stroke-linecap="round"/>
-      <circle cx="${x(n)}" cy="${y(serie[n].balance)}" r="4.5" fill="#ff7a1a"
-        stroke="#000" stroke-width="2"/>
-      ${ticks}
-    `;
+    rows.push({y, aportado, ganancias: balance - aportado, balance});
   }
 
-  function pintarPie(aportado, interes) {
-    const total = aportado + interes;
-    if (total <= 0) {
-      $('pieChart').innerHTML = '';
-      $('piePctAporte').textContent = '0%';
-      $('piePctInteres').textContent = '0%';
-      return;
-    }
+  const final = rows[rows.length - 1];
+  document.getElementById('fv').textContent = fmt(final.balance);
+  document.getElementById('leg-cap').textContent = fmt(final.aportado);
+  document.getElementById('leg-gain').textContent = fmt(final.ganancias);
 
-    const pctAporte = aportado / total;
-    const pctInteres = interes / total;
+  // Donut
+  const total = final.balance || 1;
+  const fCap = Math.max(0, final.aportado / total);
+  const fGain = Math.max(0, final.ganancias / total);
+  const segCap = document.getElementById('seg-cap');
+  const segGain = document.getElementById('seg-gain');
+  segCap.setAttribute('stroke-dasharray', `${fCap*C} ${C}`);
+  segCap.setAttribute('stroke-dashoffset', 0);
+  segGain.setAttribute('stroke-dasharray', `${fGain*C} ${C}`);
+  segGain.setAttribute('stroke-dashoffset', -fCap*C);
 
-    $('piePctAporte').textContent = (pctAporte * 100).toFixed(1) + '%';
-    $('piePctInteres').textContent = (pctInteres * 100).toFixed(1) + '%';
+  // Tabla
+  const tb = document.getElementById('tbody');
+  tb.innerHTML = rows.map(r =>
+    `<tr><td class="year">${r.y}</td>
+      <td>${fmt(r.aportado)}</td>
+      <td class="gain">+${fmt(r.ganancias)}</td>
+      <td class="total">${fmt(r.balance)}</td></tr>`
+  ).join('');
+}
 
-    // Geometría del donut
-    const cx = 60, cy = 60, r = 50, rInner = 30;
-
-    // Si una porción es 100%, dibujar como círculo completo
-    if (pctAporte >= 0.9999 || pctInteres >= 0.9999) {
-      const color = pctInteres >= 0.9999 ? '#ff7a1a' : '#d8d8d8';
-      $('pieChart').innerHTML = `
-        <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}"/>
-        <circle cx="${cx}" cy="${cy}" r="${rInner}" fill="#000"/>
-      `;
-      return;
-    }
-
-    // Arco de aportes (arriba, comenzando en 12 en punto)
-    const angAporte = pctAporte * Math.PI * 2;
-    const x1 = cx + r * Math.sin(angAporte);
-    const y1 = cy - r * Math.cos(angAporte);
-    const largeAporte = pctAporte > 0.5 ? 1 : 0;
-
-    // Arco de interés (resto)
-    const x2 = cx + r * Math.sin(angAporte);
-    const y2 = cy - r * Math.cos(angAporte);
-    const largeInteres = pctInteres > 0.5 ? 1 : 0;
-
-    const pathAporte = `M ${cx} ${cy - r}
-                        A ${r} ${r} 0 ${largeAporte} 1 ${x1} ${y1}
-                        L ${cx} ${cy} Z`;
-
-    const pathInteres = `M ${x2} ${y2}
-                         A ${r} ${r} 0 ${largeInteres} 1 ${cx} ${cy - r}
-                         L ${cx} ${cy} Z`;
-
-    $('pieChart').innerHTML = `
-      <path d="${pathAporte}" fill="#d8d8d8"/>
-      <path d="${pathInteres}" fill="#ff7a1a"/>
-      <circle cx="${cx}" cy="${cy}" r="${rInner}" fill="#000"/>
-    `;
-  }
-
-  calcular();
+// ── Init ─────────────────────────────────────────────────────────────────────
+link('r-inicial','inicial', v => v.toLocaleString('en-US'));
+link('r-mensual','mensual', v => v.toLocaleString('en-US'));
+link('r-anos','anos', v => String(Math.round(v)));
+link('r-tasa','tasa', v => v.toFixed(1));
+loadFunds();
+calc();
 </script>
 </body>
 </html>
