@@ -3,47 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Inversión — Roberto Escobar Citty</title>
+<title>Calculadora de Interés Compuesto — Roberto Escobar Citty</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0a0e1a; --surface:#121a2b; --surface-2:#1a2436;
-    --line:#283449; --line-soft:#1d2738;
-    --text:#eef2f8; --muted:#97a3b8; --muted-2:#5f6d85;
-    --accent:#4d8bf5; --accent-bright:#6aa0ff; --accent-soft:#4d8bf520;
-    --gain:#4d8bf5; --capital:#4a5a73;
+    --bg:#13110d; --surface:#1c1915; --surface-2:#25211b;
+    --line:#332e26; --line-soft:#221f19;
+    --text:#f5f2ec; --muted:#a89f92; --muted-2:#6e665b;
+    --accent:#f7941e; --accent-bright:#ffaa3d; --accent-soft:#f7941e1f;
+    --gain:#4fc06e; --capital:#6a6358;
     --radius:16px;
-    --shadow:0 2px 12px rgba(0,0,0,.4);
+    --shadow:0 2px 12px rgba(0,0,0,.45);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:var(--bg);color:var(--text);
     font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
   body{padding:clamp(14px,3.5vw,40px);min-height:100vh;
-    background-image:radial-gradient(1200px 500px at 50% -200px,#13203a 0%,transparent 70%)}
+    background-image:radial-gradient(1200px 520px at 50% -200px,#2a1d10 0%,transparent 70%)}
   .wrap{max-width:960px;margin:0 auto}
 
-  /* ── Header ───────────────────────────────────────────── */
-  header{display:flex;align-items:flex-start;justify-content:space-between;
-    gap:14px;margin-bottom:clamp(18px,2.5vw,26px)}
-  .head-left{display:flex;align-items:flex-start;gap:14px;min-width:0}
-  .head-left img{height:50px;width:auto;border-radius:10px;flex-shrink:0}
-  .logo-fallback{height:50px;width:50px;border-radius:12px;flex-shrink:0;
-    background:linear-gradient(135deg,var(--accent-bright),#2a5fc8);
-    display:grid;place-items:center;font-family:'Sora';font-weight:700;font-size:22px;color:#fff}
-  header h1{font-family:'Sora';font-weight:700;font-size:clamp(20px,3.6vw,28px);
-    letter-spacing:-.025em;line-height:1.1}
-  header .subtitle{color:var(--muted);font-size:clamp(12px,2vw,14px);margin-top:5px;line-height:1.35}
-  header .by{color:var(--accent);font-size:12px;font-weight:600;margin-top:6px}
+  /* ── Header: marca izq + versión der ──────────────────── */
+  header{display:flex;align-items:center;justify-content:space-between;
+    gap:14px;margin-bottom:clamp(16px,2.2vw,22px)}
+  .brand{display:flex;align-items:center;gap:13px;min-width:0}
+  .brand img{height:52px;width:auto;border-radius:11px;flex-shrink:0}
+  .brand-fallback{height:52px;width:52px;border-radius:12px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--accent-bright),#c46a12);
+    display:grid;place-items:center;font-family:'Sora';font-weight:800;font-size:23px;color:#1a1206}
+  .brand-name{font-family:'Sora';font-weight:800;font-size:clamp(17px,3.3vw,27px);
+    text-transform:uppercase;letter-spacing:.035em;color:var(--text);line-height:1.05}
   .version{border:1.5px solid var(--accent);color:var(--accent);background:transparent;
-    border-radius:8px;padding:4px 11px;font-family:'Sora';font-weight:600;font-size:12px;
+    border-radius:8px;padding:5px 12px;font-family:'Sora';font-weight:600;font-size:12px;
     letter-spacing:.03em;white-space:nowrap;flex-shrink:0}
+
+  /* ── Title block ──────────────────────────────────────── */
+  .title-block{margin-bottom:clamp(18px,2.5vw,24px)}
+  .title-block h1{font-family:'Sora';font-weight:700;font-size:clamp(22px,4.4vw,36px);
+    letter-spacing:-.025em;line-height:1.08;color:var(--text)}
+  .title-block .subtitle{color:var(--muted);font-size:clamp(13px,2vw,15px);margin-top:7px;line-height:1.4}
 
   /* ── Mutual fund explainer ────────────────────────────── */
   .explainer{background:var(--surface);border:1px solid var(--line);border-radius:14px;
     padding:14px 18px;margin-bottom:18px;box-shadow:var(--shadow)}
-  .explainer h3{font-family:'Sora';font-weight:600;font-size:14px;color:var(--text);margin-bottom:5px}
+  .explainer h3{font-family:'Sora';font-weight:600;font-size:14px;color:var(--accent-bright);margin-bottom:5px}
   .explainer p{font-size:13px;color:var(--muted);line-height:1.5}
 
   /* ── Fund chips — siempre una línea ───────────────────── */
@@ -56,7 +60,7 @@
   .chip.active{border-color:var(--accent);background:var(--accent-soft)}
   .chip .row1{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
   .chip .ticker{font-family:'Sora';font-weight:600;font-size:15px;color:var(--text)}
-  .chip .ret{font-size:13px;color:var(--accent-bright);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .chip .ret{font-size:13px;color:var(--gain);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
   .chip .ret.na{color:var(--muted-2)}
   .chip .fund-name{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
@@ -100,7 +104,7 @@
   .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;
     align-items:center;justify-content:center;pointer-events:none}
   .donut-center .mult{font-family:'Sora';font-weight:600;font-size:clamp(18px,4vw,24px);
-    color:var(--accent-bright);font-variant-numeric:tabular-nums}
+    color:var(--gain);font-variant-numeric:tabular-nums}
   .donut-center .mult-lbl{font-size:10px;color:var(--muted-2);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
   circle.seg{transition:stroke-dasharray .6s cubic-bezier(.4,0,.2,1)}
   .legend{display:flex;gap:clamp(14px,3vw,22px);margin-top:clamp(12px,2vw,16px);flex-wrap:wrap;justify-content:center}
@@ -124,17 +128,18 @@
   td:first-child{text-align:left}
   tr:last-child td{border-bottom:none}
   td.year{font-family:'Sora';font-weight:600;color:var(--text)}
-  td.gain{color:var(--accent-bright)}
+  td.gain{color:var(--gain)}
   td.total{font-weight:600}
 
   /* ── Footer ───────────────────────────────────────────── */
-  footer{margin-top:clamp(24px,3vw,36px);padding-top:22px;
-    border-top:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:9px}
-  footer img{height:42px;width:auto;border-radius:9px}
-  .footer-logo-fallback{height:42px;width:42px;border-radius:10px;
-    background:linear-gradient(135deg,var(--accent-bright),#2a5fc8);
-    display:grid;place-items:center;font-family:'Sora';font-weight:700;font-size:19px;color:#fff}
-  footer .name{font-family:'Sora';font-weight:600;font-size:15px;color:var(--text)}
+  footer{margin-top:clamp(24px,3vw,36px);padding-top:24px;
+    border-top:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:10px}
+  footer img{height:64px;width:auto;border-radius:12px}
+  .footer-logo-fallback{height:64px;width:64px;border-radius:14px;
+    background:linear-gradient(135deg,var(--accent-bright),#c46a12);
+    display:grid;place-items:center;font-family:'Sora';font-weight:800;font-size:28px;color:#1a1206}
+  footer .name{font-family:'Sora';font-weight:800;font-size:clamp(16px,2.6vw,20px);
+    text-transform:uppercase;letter-spacing:.035em;color:var(--text)}
   footer .disc{font-size:12px;color:var(--muted);text-align:center;max-width:480px;margin-top:2px}
   footer .src{font-size:11px;color:var(--muted-2);text-align:center}
   footer .src b{color:var(--muted)}
@@ -144,16 +149,17 @@
 <div class="wrap">
 
   <header>
-    <div class="head-left">
-      <img src="logoR.png" alt="logo" onerror="this.outerHTML='<div class=&quot;logo-fallback&quot;>R</div>'">
-      <div>
-        <h1>Calculadora de Inversión</h1>
-        <div class="subtitle">Proyecta cuánto puede crecer tu dinero con el interés compuesto</div>
-        <div class="by">por Roberto Escobar Citty</div>
-      </div>
+    <div class="brand">
+      <img src="logoR.png" alt="logo" onerror="this.outerHTML='<div class=&quot;brand-fallback&quot;>R</div>'">
+      <span class="brand-name">Roberto Escobar Citty</span>
     </div>
     <div class="version">V. 3.0</div>
   </header>
+
+  <div class="title-block">
+    <h1>Calculadora de Interés Compuesto</h1>
+    <div class="subtitle">Proyecta cuánto puede crecer tu dinero con el interés compuesto</div>
+  </div>
 
   <div class="explainer">
     <h3>¿Qué es un fondo mutuo?</h3>
