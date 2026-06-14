@@ -1,8 +1,9 @@
 {
-  "as_of": "2026-06-14 01:32 UTC",
+  "as_of": "2026-06-14 02:27 UTC",
   "source": "yfinance (adjusted close, CAGR)",
   "funds": {
     "FELAX": {
+      "name": "Fidelity Advisor Semiconductors A",
       "returns": {
         "1y": 142.91,
         "3y": 58.8,
@@ -13,6 +14,7 @@
       "last_data": "2026-06-12"
     },
     "FKDNX": {
+      "name": "Franklin DynaTech A",
       "returns": {
         "1y": 21.5,
         "3y": 23.0,
@@ -23,6 +25,7 @@
       "last_data": "2026-06-12"
     },
     "VADAX": {
+      "name": "Invesco Equally-Weighted S&P 500 Fund",
       "returns": {
         "1y": 19.52,
         "3y": 14.66,
@@ -33,6 +36,7 @@
       "last_data": "2026-06-12"
     },
     "FOCPX": {
+      "name": "Fidelity OTC",
       "returns": {
         "1y": 54.1,
         "3y": 31.94,
@@ -43,6 +47,7 @@
       "last_data": "2026-06-12"
     },
     "FNIAX": {
+      "name": "Fidelity Advisor New Insights A",
       "returns": {
         "1y": 26.55,
         "3y": 27.51,
